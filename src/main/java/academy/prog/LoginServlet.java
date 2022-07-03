@@ -20,26 +20,9 @@ public class LoginServlet extends HttpServlet {
         LoginServlet.accounts = accounts;
     }
 
-    protected static String checkPasswordStrength(String pass) {
-        String result = "";
-        String specSymbols = "/*!@#$%^&*()\\\"{}_[]|\\\\?/<>,.':;`~+-=№";
-        boolean length = false;
-        boolean containUpperCase = false;
-        boolean containLowerCase = false;
-        boolean containSpecialSymbols = false;
-        boolean containDigit = false;
-        if (pass.length() >= 10) {length = true;}
-        for (int i = 0; i < pass.length(); i++) {
-            if (Character.isUpperCase(pass.charAt(i))) {containUpperCase = true;}
-            else if (Character.isLowerCase(pass.charAt(i))) {containLowerCase = true;}
-            else if (specSymbols.contains("" + pass.charAt(i))) {containSpecialSymbols = true;}
-            else if (Character.isDigit(pass.charAt(i))) {containDigit = true;}
-        }
-        if (!length || !containUpperCase || !containLowerCase || !containSpecialSymbols || !containDigit) {
-            result += "Warning! Your password is not safe! It must be minimum 10 symbols length and contain:";
-            result += " digits, lowercase and uppercase characters, special symbols.";
-        }
-        return result;
+    private boolean isPasswordSecure(String password) {
+        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{10,}";
+        return password.matches(pattern);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -54,7 +37,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession(true);
             session.setAttribute("user_login", login);
             session.setAttribute("user_age", age);
-            session.setAttribute("pass_strength", checkPasswordStrength(password));
+            session.setAttribute("pass_strength", isPasswordSecure(password));
         } else {
             HttpSession session = request.getSession(false);
             session.setAttribute("input", "wrong");

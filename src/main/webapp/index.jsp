@@ -5,7 +5,7 @@
   </head>
   <body>
     <% String login = (String)session.getAttribute("user_login"); %>
-    <% String passStrength = (String)session.getAttribute("pass_strength"); %>
+    <% Boolean isPasswordSecure = (Boolean)session.getAttribute("pass_strength"); %>
     <% String age = (String)session.getAttribute("user_age"); %>
     <% String input = (String)session.getAttribute("input"); %>
     <% String newAccount = (String) session.getAttribute("new_account"); %>
@@ -33,8 +33,9 @@
         </form>
     <% } else { %>
         <h1>You are logged in as: <%= login %></h1>
-        <% if (passStrength.length() > 0) { %>
-        <span style="color: red; "><%= passStrength%></span><br>
+        <% if (!isPasswordSecure) { %>
+        <span style="color: red; ">Warning! Your password is not safe! It must be minimum 10 symbols length and contain:</span><br>
+        <span style="color: red; ">digits, lowercase and uppercase characters, special symbols.</span><br>
         <% } %>
         <br>Click this link to <a href="/login?a=exit">logout</a>
     <% } %>
